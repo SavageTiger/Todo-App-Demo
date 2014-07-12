@@ -1,0 +1,5 @@
+
+todo_app:
+    resource: "@RednoseTodoBundle/Controller/"
+    type:     annotation
+    prefix:   /

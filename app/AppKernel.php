@@ -17,11 +17,17 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
-            // JMS Serializer bundle (for entity (de-)serialization)
+            // JMSSerializerBundle (for entity (de-)serialization)
             new JMS\SerializerBundle\JMSSerializerBundle(),
 
-            // FOSRouting bundle (for exposing Symfony2 routes to javascript).
-            new FOS\JsRoutingBundle\FOSJsRoutingBundle()
+            // FOSRoutingBundle (for exposing Symfony2 routes to javascript)
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+
+            // FOSRestBundle  (Tools used to create a simple but effective Restfull API)
+            new FOS\RestBundle\FOSRestBundle(),
+
+            // The app
+            new Rednose\TodoBundle\RednoseTodoBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

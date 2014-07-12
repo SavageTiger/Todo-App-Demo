@@ -22,7 +22,8 @@
 
         "rednose/rednose-ui": "dev-master",
         "jms/serializer-bundle": "0.13.0",
-        "friendsofsymfony/jsrouting-bundle": "1.5.3"
+        "friendsofsymfony/jsrouting-bundle": "1.5.3",
+        "friendsofsymfony/rest-bundle": "1.4.0"
     },
     "scripts": {
         "post-install-cmd": [
