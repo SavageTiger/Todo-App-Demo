@@ -1,0 +1,1 @@
+YUI.add("todo-app",function(e,t){var n=e.Base.create("todoApp",e.Rednose.App,[],{initializer:function(e){n.superclass.initializer.apply(this,arguments)}},{ATTRS:{}});e.namespace("TodoApp").App=n},"@VERSION@",{requires:["node","rednose-app"]});

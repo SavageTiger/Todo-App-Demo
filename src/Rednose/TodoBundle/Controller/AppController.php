@@ -11,6 +11,8 @@ class AppController extends Controller
      * Render the base template bootstrapping the SPA.
      *
      * @Get("/", name="todo_app_home")
+     *
+     * @return Response
      */
     function homeAction()
     {

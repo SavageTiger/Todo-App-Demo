@@ -1,0 +1,8 @@
+{
+    "todo-app" : {
+        "requires": [
+            "node",
+            "rednose-app"
+        ]
+    }
+}

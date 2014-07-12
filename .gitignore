@@ -1,4 +1,5 @@
 .idea/
+/web/rednose-ui/
 /web/bundles/
 /app/bootstrap.php.cache
 /app/cache/*

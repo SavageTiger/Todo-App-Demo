@@ -1,5 +1,38 @@
 <html>
-    <body>
+    <head>
         <title>SPA todo app demo</title>
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="rednose-ui/rednose-ui/rednose-ui.css" rel="stylesheet"/>
+
+        <script src="http://yui.yahooapis.com/3.11.0/build/yui/yui.js"></script>
+        <script src="rednose-ui/rednose-loader/rednose-loader.js"></script>
+        <script src="{{ asset('bundles/rednosetodo/js/build/todo-loader/todo-loader.js') }}"></script>
+
+        <script>
+            YUI.Env.core.push('rednose-loader');
+            YUI.Env.core.push('todo-loader');
+
+            YUI({
+                'groups': {
+                    'rednose-ui': {
+                        base: 'rednose-ui/',
+                        filter: 'raw'
+                    },
+                    'todo': {
+                        base: '{{ asset('bundles/rednosetodo/js/build') }}/',
+                        debug: false
+                    }
+                }
+            }).use('node', 'todo-app', function (Y) {
+                var app = new Y.TodoApp.App({ debug: false });
+
+                app.render({
+                    container: Y.one('div')
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div></div>
     </body>
 </html>

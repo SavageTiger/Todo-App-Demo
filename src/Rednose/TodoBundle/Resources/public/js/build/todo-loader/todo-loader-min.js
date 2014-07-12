@@ -1,0 +1,1 @@
+YUI.add("todo-loader",function(e,t){YUI.Env[e.version].modules=YUI.Env[e.version].modules||{},e.mix(YUI.Env[e.version].modules,{"todo-app":{group:"todo",requires:["node","rednose-app"]}}),YUI.Env[e.version].md5="504192610681ffa5d43e913f2a0cc60b"},"@VERSION@");

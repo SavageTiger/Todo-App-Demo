@@ -1,0 +1,13 @@
+{
+    "name": "todo-loader",
+    "builds": {
+        "todo-loader": {
+            "exec": [
+                "yogi loader --group todo --json false --tests false -js js/todo.js --yes --mix --start ../"
+            ],
+            "jsfiles": [
+                "todo.js"
+            ]
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "name": "todo-app",
+
+    "builds": {
+        "todo-app": {
+            "jsfiles": [
+                "js/todo-app.js"
+            ]
+        }
+    }
+}
