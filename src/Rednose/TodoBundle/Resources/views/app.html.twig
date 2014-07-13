@@ -4,7 +4,10 @@
         <link href="http://netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet"/>
         <link href="rednose-ui/rednose-ui/rednose-ui.css" rel="stylesheet"/>
 
-        <script src="http://yui.yahooapis.com/3.11.0/build/yui/yui.js"></script>
+        <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+        <script src="http://yui.yahooapis.com/3.17.2/build/yui/yui.js"></script>
         <script src="rednose-ui/rednose-loader/rednose-loader.js"></script>
         <script src="{{ asset('bundles/rednosetodo/js/build/todo-loader/todo-loader.js') }}"></script>
 

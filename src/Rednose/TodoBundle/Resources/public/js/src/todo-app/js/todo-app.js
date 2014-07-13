@@ -16,6 +16,10 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
     Y.Rednose.View.Template.Toolbar
 ], {
 
+    // -- properties properties ------------------------------------------------
+
+    _projectsView: null,
+
     // -- Lifecycle methods ----------------------------------------------------
 
     /**
@@ -23,11 +27,33 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
      *
      * @param config
      */
-    initializer: function (config) {
-        TodoApp.superclass.initializer.apply(this, arguments);
+    initializer: function () {
+        this._projectsView = new Y.TodoApp.ProjectsView();
 
         this.after('ready', function () {
+            this._projectsView.set('container', this.get('rightContainer'));
+
+            this._loadProjects();
+
             Y.Rednose.App.setTitle(APP_NAME, false);
+        });
+
+        TodoApp.superclass.initializer.apply(this, arguments);
+    },
+
+    // -- Protected methods ----------------------------------------------------
+
+    /**
+     * Load the projects model
+     *
+     * @private
+     */
+    _loadProjects: function () {
+        var self     = this,
+            projects = new Y.TodoApp.Projects();
+
+        projects.load(function() {
+            self._projectsView.set('model', projects);
         });
     }
 

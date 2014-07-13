@@ -2,7 +2,8 @@
     "todo-app" : {
         "requires": [
             "node",
-            "rednose-app"
+            "rednose-app",
+            "todo-models"
         ]
     }
 }

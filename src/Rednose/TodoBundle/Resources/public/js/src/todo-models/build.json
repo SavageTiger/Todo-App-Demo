@@ -1,0 +1,13 @@
+{
+    "name": "todo-models",
+
+    "builds": {
+    "todo-models": {
+        "jsfiles": [
+            "js/task.js",
+            "js/project.js",
+            "js/projects.js"
+        ]
+    }
+}
+}

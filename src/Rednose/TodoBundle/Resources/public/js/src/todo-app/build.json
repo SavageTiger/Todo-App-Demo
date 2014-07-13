@@ -4,7 +4,8 @@
     "builds": {
         "todo-app": {
             "jsfiles": [
-                "js/todo-app.js"
+                "js/todo-app.js",
+                "js/views/projects.js"
             ]
         }
     }

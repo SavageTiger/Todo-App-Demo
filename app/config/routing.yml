@@ -1,3 +1,6 @@
 _todo_app:
     resource: "@RednoseTodoBundle/Resources/config/routing/routes.yml"
     prefix:   /
+
+_fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
