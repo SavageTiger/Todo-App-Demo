@@ -46,4 +46,20 @@ class Task implements TaskInterface
     {
         $this->ready = state;
     }
+
+    /**
+     * @see TaskInterface
+     */
+    public function getProject()
+    {
+        return $this->$project;
+    }
+
+    /**
+     * @see TaskInterface
+     */
+    public function setProject(ProjectInterface $project)
+    {
+        $this->project = $project;
+    }
 }

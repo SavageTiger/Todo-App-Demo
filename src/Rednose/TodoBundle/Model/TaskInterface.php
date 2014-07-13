@@ -38,4 +38,19 @@ interface TaskInterface
      * @param boolean $state
      */
     public function setReady($state);
+
+    /**
+     * Set my project
+     *
+     * @param ProjectInterface $project
+     */
+    public function setProject(ProjectInterface $project);
+
+    /**
+     * Get my project
+     *
+     * @return ProjectInterface
+     */
+    public function getProject();
+
 }

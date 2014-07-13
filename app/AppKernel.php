@@ -26,6 +26,9 @@ class AppKernel extends Kernel
             // FOSRestBundle  (Tools used to create a simple but effective Restfull API)
             new FOS\RestBundle\FOSRestBundle(),
 
+            // DoctrineFixturesBundle
+            new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
+
             // The app
             new Rednose\TodoBundle\RednoseTodoBundle()
         );

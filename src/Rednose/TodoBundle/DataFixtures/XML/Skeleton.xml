@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<projects>
+
+    <project name="Baking cookies">
+        <tasks>
+            <task ready="false">
+                <description>Decide what sort of cookie to bake</description>
+            </task>
+            <task ready="false">
+                <description>Buy ingredients</description>
+            </task>
+            <task ready="false">
+                <description>Ivite friends to taste my amazing cookies</description>
+            </task>
+        </tasks>
+    </project>
+
+    <project name="Become famous">
+        <tasks>
+            <task ready="true">
+                <description>Collect underpants</description>
+            </task>
+            <task ready="false">
+                    <description>???</description>
+            </task>
+            <task ready="false">
+                <description>Profit</description>
+            </task>
+        </tasks>
+    </project>
+
+</projects>

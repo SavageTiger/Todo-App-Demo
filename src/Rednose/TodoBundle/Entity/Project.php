@@ -23,7 +23,35 @@ class Project extends BaseProject
     /**
      * @ORM\Column(type="string", length=255)
      *
-     * @Serializer\Groups({"details"})
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"details", "file"})
      */
     protected $name;
+
+    /**
+     * @ORM\OneToMany(
+     *   targetEntity="Task",
+     *   orphanRemoval=true,
+     *   mappedBy="project",
+     *   cascade={"persist", "remove"})
+     * @ORM\OrderBy({"id" = "ASC"})
+     *
+     * @Serializer\Groups({"details", "file"})
+     * @Serializer\SerializedName("tasks")
+     * @Serializer\XmlList(inline = false, entry = "task")
+     */
+    protected $tasks;
+
+    // -- Transient API properties ---------------------------------------------
+
+    /**
+     * @Serializer\PostDeserialize
+     */
+    public function postDeserialize()
+    {
+        foreach ($this->tasks as $task) {
+            $task->setProject($this);
+        }
+    }
+
 }

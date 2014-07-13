@@ -24,4 +24,19 @@ interface ProjectInterface
      * @param string $name
      */
     public function setName($name);
+
+    /**
+     * Add a task to the project
+     *
+     * @param TaskInterface $task
+     */
+    public function addTask(TaskInterface $task);
+
+    /**
+     * Get tasks bound to this project
+     *
+     * @return ArrayCollection<TaskInterface>
+     */
+    public function getTasks();
+
 }

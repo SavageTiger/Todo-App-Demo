@@ -20,6 +20,7 @@
         "sensio/generator-bundle": "2.3.*",
         "incenteev/composer-parameter-handler": "~2.0",
 
+        "doctrine/doctrine-fixtures-bundle": "2.2.*",
         "rednose/rednose-ui": "dev-master",
         "jms/serializer-bundle": "0.13.0",
         "friendsofsymfony/jsrouting-bundle": "1.5.3",

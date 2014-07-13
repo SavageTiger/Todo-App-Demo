@@ -23,14 +23,15 @@ class Task extends BaseTask
     /**
      * @ORM\Column(type="string", length=255)
      *
-     * @Serializer\Groups({"details"})
+     * @Serializer\Groups({"details", "file"})
      */
     protected $description;
 
     /**
      * @ORM\Column(type="boolean")
      *
-     * @Serializer\Groups({"details"})
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"details", "file"})
      */
     protected $ready = false;
 
@@ -46,6 +47,5 @@ class Task extends BaseTask
      * @Serializer\SerializedName("project")
      * @Serializer\Groups({"details"})
      */
-
     protected $project;
 }
