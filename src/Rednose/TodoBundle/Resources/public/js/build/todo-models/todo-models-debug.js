@@ -1,5 +1,7 @@
 YUI.add('todo-models', function (Y, NAME) {
 
+/*jshint onevar:false */
+
 var TaskModel = Y.Base.create('taskModel', Y.Model, [], {
 
 }, {
@@ -19,14 +21,15 @@ var TaskModel = Y.Base.create('taskModel', Y.Model, [], {
          * @type {boolean}
          */
         ready: {
-            value: false,
+            value: false
         }
     }
 });
 
 // --- Namespace ---------------------------------------------------------------
 
-Y.namespace('TodoApp').Task = TaskModel;
+Y.namespace('TodoApp').Task = TaskModel;/*jshint onevar:false */
+
 var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
 
     initializer: function (data) {
@@ -36,13 +39,13 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
     },
 
     _setTasks: function (tasks) {
-        var buffer = [];
+        var buffer = new Y.ModelList;
 
         Y.each(tasks, function (task) {
             if (Y.instanceOf(task, Y.TodoApp.Task)) {
-                buffer.push(task);
+                buffer.add(task);
             } else {
-                buffer.push(new Y.TodoApp.Task(task));
+                buffer.add(new Y.TodoApp.Task(task));
             }
         });
 
@@ -74,7 +77,9 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
 
 // --- Namespace ---------------------------------------------------------------
 
-Y.namespace('TodoApp').Project = ProjectModel;
+Y.namespace('TodoApp').Project = ProjectModel;/*global Routing */
+/*jshint onevar:false */
+
 var ProjectsModel = Y.Base.create('projectsModel', Y.ModelList, [], {
 
     model: Y.TodoApp.Project,

@@ -1,3 +1,4 @@
+
 var ProjectsView;
 
 var VIEW_TITLE = 'Projects';
@@ -6,11 +7,22 @@ ProjectsView = Y.Base.create('projectsView', Y.View, [ ], {
 
     // -- Public properties ----------------------------------------------------
 
+    /**
+     * Automagicly created events.
+     *
+     * @see {View}
+     */
+    events: {
+        'a': {
+            click: '_handleItemClicked'
+        }
+    },
+
     template: '<div><ul class="nav nav-tabs nav-stacked"></ul></div>',
 
     titleTemplate: '<h3>' + VIEW_TITLE + '</h3>',
 
-    itemTemplate: '<li><a href="#"></a></li>',
+    itemTemplate: '<li><a href="#"><i class="icon-list-alt"></i>&nbsp;</a></li>',
 
     // -- Protected Properties -------------------------------------------------
 
@@ -38,8 +50,6 @@ ProjectsView = Y.Base.create('projectsView', Y.View, [ ], {
     destructor: function () {
         this.detach(this._events);
 
-        this.get('container').all('*').detachAll();
-
         this._events = null;
     },
 
@@ -51,7 +61,6 @@ ProjectsView = Y.Base.create('projectsView', Y.View, [ ], {
     render: function () {
         var container = this.get('container');
 
-        container.all('*').detach('click');
         container.all('*').remove();
 
         container.append(this.template);
@@ -79,8 +88,7 @@ ProjectsView = Y.Base.create('projectsView', Y.View, [ ], {
             var item = Y.Node.create(self.itemTemplate),
                 anchor = item.one('a');
 
-            anchor.setHTML(project.get('name'));
-            anchor.on('click', self._handleItemClicked, self);
+            anchor.append(project.get('name'));
             anchor.setData('model', project);
 
             if (first) {
@@ -117,16 +125,19 @@ ProjectsView = Y.Base.create('projectsView', Y.View, [ ], {
         var node  = e.currentTarget,
             model = node.getData('model');
 
+        node.ancestor('ul').all('.active').removeClass('active');
+        node.get('parentNode').addClass('active');
+
         this.fire('openProject', { model: model });
     }
 
 }, {
     ATTRS: {
         /**
-         * The project model
+         * The projects model
          *
          * @attribute elementModel
-         * @type {Y.TodoApp.Project}
+         * @type {Y.TodoApp.Projects}
          */
         model: {
             value: null

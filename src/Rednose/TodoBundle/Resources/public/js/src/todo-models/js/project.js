@@ -1,3 +1,4 @@
+/*jshint onevar:false */
 
 var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
 
@@ -8,13 +9,13 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
     },
 
     _setTasks: function (tasks) {
-        var buffer = [];
+        var buffer = new Y.ModelList;
 
         Y.each(tasks, function (task) {
             if (Y.instanceOf(task, Y.TodoApp.Task)) {
-                buffer.push(task);
+                buffer.add(task);
             } else {
-                buffer.push(new Y.TodoApp.Task(task));
+                buffer.add(new Y.TodoApp.Task(task));
             }
         });
 

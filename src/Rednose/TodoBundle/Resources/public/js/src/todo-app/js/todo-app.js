@@ -15,8 +15,20 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
     Y.Rednose.View.Template.MasterDetail,
     Y.Rednose.View.Template.Toolbar,
 
-    Y.TodoApp.Navbar
+    Y.TodoApp.Navbar,
+    Y.TodoApp.Toolbar
 ], {
+
+    // -- Public Properties ----------------------------------------------------
+
+    /**
+     * @see {App.Views}
+     */
+    views: {
+        todoListView: {
+            type: 'TodoApp.TodoListView'
+        }
+    },
 
     // -- Protected Properties -------------------------------------------------
 
@@ -86,10 +98,13 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
     /**
      * Open project
      *
+     * @param {EventFacade} e
      * @private
      */
     _handleOpenProject: function (e) {
-        console.log(e);
+        this.showView('todoListView', {
+            model: e.model
+        });
     }
 
 }, {

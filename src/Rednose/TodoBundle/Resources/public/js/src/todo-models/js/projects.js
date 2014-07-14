@@ -1,3 +1,5 @@
+/*global Routing */
+/*jshint onevar:false */
 
 var ProjectsModel = Y.Base.create('projectsModel', Y.ModelList, [], {
 

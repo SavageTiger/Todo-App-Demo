@@ -5,8 +5,10 @@
         "todo-app": {
             "jsfiles": [
                 "extensions/navbar.js",
+                "extensions/toolbar.js",
                 "js/todo-app.js",
-                "js/views/projects.js"
+                "js/views/projects.js",
+                "js/views/todolist.js"
             ]
         }
     }

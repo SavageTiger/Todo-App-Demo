@@ -15,6 +15,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         "group": "todo",
         "requires": [
             "node",
+            "template-micro",
             "rednose-app",
             "rednose-navbar",
             "todo-models"
@@ -30,7 +31,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     }
 });
-YUI.Env[Y.version].md5 = '81523ffb5e7ec8fe4a2ec81c55c8a4a1';
+YUI.Env[Y.version].md5 = '83d42dda975fa4bd8f27d9a47cc610f2';
 
 
 }, '@VERSION@');

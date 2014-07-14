@@ -2,6 +2,7 @@
     "todo-app" : {
         "requires": [
             "node",
+            "template-micro",
             "rednose-app",
             "rednose-navbar",
             "todo-models"

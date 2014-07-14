@@ -1,3 +1,5 @@
+/*jshint onevar:false */
+
 var TaskModel = Y.Base.create('taskModel', Y.Model, [], {
 
 }, {
@@ -17,7 +19,7 @@ var TaskModel = Y.Base.create('taskModel', Y.Model, [], {
          * @type {boolean}
          */
         ready: {
-            value: false,
+            value: false
         }
     }
 });

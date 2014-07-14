@@ -16,13 +16,13 @@
         </tasks>
     </project>
 
-    <project name="Become famous">
+    <project name="Become rich and famous">
         <tasks>
             <task ready="true">
                 <description>Collect underpants</description>
             </task>
             <task ready="false">
-                    <description>???</description>
+                <description>???</description>
             </task>
             <task ready="false">
                 <description>Profit</description>
