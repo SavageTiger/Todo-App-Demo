@@ -4,6 +4,7 @@
             "node",
             "rednose-app",
             "todo-models"
-        ]
+        ],
+        "skinnable": true
     }
 }

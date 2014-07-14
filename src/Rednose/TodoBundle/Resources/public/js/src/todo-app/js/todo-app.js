@@ -16,8 +16,16 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
     Y.Rednose.View.Template.Toolbar
 ], {
 
-    // -- properties properties ------------------------------------------------
+    // -- Protected Properties -------------------------------------------------
 
+    /**
+     * @type {Array}
+     */
+    _events: null,
+
+    /**
+     * @type {Y.TodoApp.ProjectstView}
+     */
     _projectsView: null,
 
     // -- Lifecycle methods ----------------------------------------------------
@@ -28,7 +36,14 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
      * @param config
      */
     initializer: function () {
+        this._events = [];
+
         this._projectsView = new Y.TodoApp.ProjectsView();
+        this._projectsView.addTarget(this);
+
+        this._events.push(
+            this.after('projectsView:openProject', this._handleOpenProject, this)
+        );
 
         this.after('ready', function () {
             this._projectsView.set('container', this.get('rightContainer'));
@@ -39,6 +54,15 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         });
 
         TodoApp.superclass.initializer.apply(this, arguments);
+    },
+
+    /**
+     * Destructor
+     */
+    destructor: function () {
+        this.detach(this._events);
+
+        this._events = null;
     },
 
     // -- Protected methods ----------------------------------------------------
@@ -55,6 +79,15 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         projects.load(function() {
             self._projectsView.set('model', projects);
         });
+    },
+
+    /**
+     * Open project
+     *
+     * @private
+     */
+    _handleOpenProject: function (e) {
+        console.log(e);
     }
 
 }, {

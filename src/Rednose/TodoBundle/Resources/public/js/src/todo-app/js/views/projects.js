@@ -1,12 +1,16 @@
 var ProjectsView;
 
-ProjectsView = Y.Base.create('projectsView', Y.View, [], {
+var VIEW_TITLE = 'Projects';
+
+ProjectsView = Y.Base.create('projectsView', Y.View, [ ], {
 
     // -- Public properties ----------------------------------------------------
 
-    template: '<ul class="nav nav-tabs nav-stacked"></ul>',
+    template: '<div><ul class="nav nav-tabs nav-stacked"></ul></div>',
 
-    itemTemplate: '<li></li>',
+    titleTemplate: '<h3>' + VIEW_TITLE + '</h3>',
+
+    itemTemplate: '<li><a href="#"></a></li>',
 
     // -- Protected Properties -------------------------------------------------
 
@@ -34,31 +38,87 @@ ProjectsView = Y.Base.create('projectsView', Y.View, [], {
     destructor: function () {
         this.detach(this._events);
 
+        this.get('container').all('*').detachAll();
+
         this._events = null;
     },
 
     // -- Public Methods -------------------------------------------------------
 
+    /**
+     * (Re-)Render the view
+     */
     render: function () {
-        var self      = this,
-            container = this.get('container'),
-            list      = Y.Node.create(this.template),
-            projects  = this.get('model');
+        var container = this.get('container');
 
-        Y.each(projects, function(project) {
-            var li = Y.Node.create(self.itemTemplate);
+        container.all('*').detach('click');
+        container.all('*').remove();
 
-            li.setHTML(project.get('name'));
+        container.append(this.template);
+        container.one('div').prepend(this.titleTemplate);
 
-            list.append(li);
-        });
-
-        container.append(list);
-    }
+        this._renderProjectItems();
+        this._openFirstProject();
+    },
 
     // -- Protected Methods ----------------------------------------------------
 
-    // Stub..
+    /**
+     * Render a list of projects and add it to the container node
+     *
+     * @private
+     */
+    _renderProjectItems: function () {
+        var self      = this,
+            first     = true,
+            container = this.get('container'),
+            list      = container.one('ul'),
+            projects  = this.get('model');
+
+        Y.each(projects, function(project) {
+            var item = Y.Node.create(self.itemTemplate),
+                anchor = item.one('a');
+
+            anchor.setHTML(project.get('name'));
+            anchor.on('click', self._handleItemClicked, self);
+            anchor.setData('model', project);
+
+            if (first) {
+                item.addClass('active');
+
+                first = false;
+            }
+
+            list.append(item);
+        });
+    },
+
+    /**
+     * Open the first project
+     *
+     * @private
+     */
+    _openFirstProject: function () {
+        var container = this.get('container'),
+            firstNode = container.one('ul').one('.active');
+
+        if (firstNode) {
+            this._handleItemClicked({ currentTarget: firstNode.one('a') });
+        }
+    },
+
+    /**
+     * Callback fired when a project is clicked
+     *
+     * @param {EventFacade} e
+     * @private
+     */
+    _handleItemClicked: function (e) {
+        var node  = e.currentTarget,
+            model = node.getData('model');
+
+        this.fire('openProject', { model: model });
+    }
 
 }, {
     ATTRS: {
