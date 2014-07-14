@@ -3,6 +3,7 @@
         "requires": [
             "node",
             "rednose-app",
+            "rednose-navbar",
             "todo-models"
         ],
         "skinnable": true

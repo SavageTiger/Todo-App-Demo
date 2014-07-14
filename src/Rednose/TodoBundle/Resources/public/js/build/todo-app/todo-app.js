@@ -1,6 +1,36 @@
 YUI.add('todo-app', function (Y, NAME) {
 
-/*jshint boss:true, expr:true, onevar:false */
+
+var Navbar = Y.Base.create('navBar', Y.Base, [], {
+
+    // -- Protected Properties -------------------------------------------------
+
+    /**
+     * @type {Rednose.Navbar}
+     */
+    _navbar: null,
+
+    // -- Lifecycle Methods ----------------------------------------------------
+
+    initializer: function () {
+        var node = this.get('navbarContainer');
+
+        this._navbar = new Y.Rednose.Navbar({
+            title       : APP_NAME,
+            columnLayout: true,
+            container   : node
+        });
+
+        this._navbar.render();
+    },
+
+    destructor: function () {
+        this._navbar.destroy();
+        this._navbar = null;
+    }
+});
+
+Y.namespace('TodoApp').Navbar = Navbar;/*jshint boss:true, expr:true, onevar:false */
 
 var APP_NAME = 'Todo App Demo';
 
@@ -15,7 +45,9 @@ var APP_NAME = 'Todo App Demo';
 var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
     Y.Rednose.View.Template.Navbar,
     Y.Rednose.View.Template.MasterDetail,
-    Y.Rednose.View.Template.Toolbar
+    Y.Rednose.View.Template.Toolbar,
+
+    Y.TodoApp.Navbar
 ], {
 
     // -- Protected Properties -------------------------------------------------
@@ -238,4 +270,4 @@ ProjectsView = Y.Base.create('projectsView', Y.View, [ ], {
 Y.namespace('TodoApp').ProjectsView = ProjectsView;
 
 
-}, '@VERSION@', {"requires": ["node", "rednose-app", "todo-models"], "skinnable": true});
+}, '@VERSION@', {"requires": ["node", "rednose-app", "rednose-navbar", "todo-models"], "skinnable": true});

@@ -13,7 +13,9 @@ var APP_NAME = 'Todo App Demo';
 var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
     Y.Rednose.View.Template.Navbar,
     Y.Rednose.View.Template.MasterDetail,
-    Y.Rednose.View.Template.Toolbar
+    Y.Rednose.View.Template.Toolbar,
+
+    Y.TodoApp.Navbar
 ], {
 
     // -- Protected Properties -------------------------------------------------

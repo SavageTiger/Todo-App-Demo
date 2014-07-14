@@ -4,6 +4,7 @@
     "builds": {
         "todo-app": {
             "jsfiles": [
+                "extensions/navbar.js",
                 "js/todo-app.js",
                 "js/views/projects.js"
             ]
