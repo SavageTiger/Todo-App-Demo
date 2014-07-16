@@ -5,6 +5,8 @@
             "template-micro",
             "rednose-app",
             "rednose-navbar",
+            "rednose-toolbar",
+            "rednose-dialog",
             "todo-models"
         ],
         "skinnable": true

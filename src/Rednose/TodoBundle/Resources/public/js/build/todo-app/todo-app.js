@@ -58,8 +58,8 @@ var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
         var buttonGroups = [
             {
                 buttons: [
-                    { id: 'add', value: 'Task', icon: 'icon-plus', title: 'Add task' },
-                    { id: 'add-project', value: 'Project', icon: 'icon-plus', title: 'Add project' }
+                    { id: 'addTask', value: 'Task', icon: 'icon-plus', title: 'Add task' },
+                    { id: 'addProject', value: 'Project', icon: 'icon-plus', title: 'Add project' }
                 ]
             },
 
@@ -127,7 +127,9 @@ var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
 
         this._toolbarEvents.push(
             this.after({
-                'toolbar:click#restore' : this._handleRestore
+                'toolbar:click#addTask'    : this._handleAddClicked,
+                'toolbar:click#addProject' : this._handleAddClicked,
+                'toolbar:click#restore'    : this._handleRestore
             })
         );
     },
@@ -141,11 +143,17 @@ var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
         (new Y.EventHandle(this._toolbarEvents)).detach();
     },
 
-    _handleRestore: function () {
-        var view = this.get('activeView');
-
-        if (view && Y.instanceOf(view, Y.TodoApp.TodoListView)) {
-            view.restoreItem();
+    /**
+     * Fires when AddProject or AddTask is clicked
+     *
+     * @param {EventFacade} e
+     * @private
+     */
+    _handleAddClicked: function (e) {
+        if (e.button.get('id').indexOf('Project') !== -1) {
+            this._handleAdd('project');
+        } else {
+            this._handleAdd('task');
         }
     }
 
@@ -273,7 +281,61 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         } else {
             this.disableRestore();
         }
+    },
+
+    /**
+     * Fired when the addTask or addProject button is clicked in the toolbar
+     *
+     * @param {string} modelType Expected 'project' or 'task'
+     * @private
+     */
+    _handleAdd: function (modelType) {
+        var self   = this,
+            dialog = new Y.Rednose.Dialog();
+
+        dialog.prompt({
+            title: 'Add new ' + modelType,
+            text: 'Name'
+        }, function (value) {
+
+            // Add project
+            if (modelType === 'project') {
+                var projectsModel = self._projectsView.get('model');
+
+                var model = new Y.TodoApp.Project({ name: value });
+
+                projectsModel.add(model);
+
+                self._projectsView.render();
+            }
+
+            // Add task
+            if (modelType === 'task') {
+                var view    = self.get('activeView'),
+                    project = view.get('model');
+
+                var model   = new Y.TodoApp.Task({ description: value });
+
+                project.get('tasks').add(model);
+
+                view.render();
+            }
+        });
+    },
+
+    /**
+     * Fired when the restore task button is clicked in the toolbar
+     *
+     * @private
+     */
+    _handleRestore: function () {
+        var view = this.get('activeView');
+
+        if (view && Y.instanceOf(view, Y.TodoApp.TodoListView)) {
+            view.restoreItem();
+        }
     }
+
 
 }, {
     ATTRS: {
@@ -619,4 +681,15 @@ TodoListView = Y.Base.create('todoListView', Y.View, [ ], {
 Y.namespace('TodoApp').TodoListView = TodoListView;
 
 
-}, '@VERSION@', {"requires": ["node", "template-micro", "rednose-app", "rednose-navbar", "todo-models"], "skinnable": true});
+}, '@VERSION@', {
+    "requires": [
+        "node",
+        "template-micro",
+        "rednose-app",
+        "rednose-navbar",
+        "rednose-toolbar",
+        "rednose-dialog",
+        "todo-models"
+    ],
+    "skinnable": true
+});

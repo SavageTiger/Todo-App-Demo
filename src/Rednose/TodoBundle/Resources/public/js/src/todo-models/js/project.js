@@ -33,7 +33,12 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
      * @returns integer
      */
     _taskComparator: function (model) {
-        return model.get('id');
+        var clientId = model.get('clientId');
+
+        clientId = clientId.substring(clientId.indexOf('_') + 1);
+        clientId = parseInt(clientId, 8);
+
+        return clientId;
     }
 
 }, {

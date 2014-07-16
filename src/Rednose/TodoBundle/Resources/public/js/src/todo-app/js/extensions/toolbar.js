@@ -26,8 +26,8 @@ var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
         var buttonGroups = [
             {
                 buttons: [
-                    { id: 'add', value: 'Task', icon: 'icon-plus', title: 'Add task' },
-                    { id: 'add-project', value: 'Project', icon: 'icon-plus', title: 'Add project' }
+                    { id: 'addTask', value: 'Task', icon: 'icon-plus', title: 'Add task' },
+                    { id: 'addProject', value: 'Project', icon: 'icon-plus', title: 'Add project' }
                 ]
             },
 
@@ -95,7 +95,9 @@ var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
 
         this._toolbarEvents.push(
             this.after({
-                'toolbar:click#restore' : this._handleRestore
+                'toolbar:click#addTask'    : this._handleAddClicked,
+                'toolbar:click#addProject' : this._handleAddClicked,
+                'toolbar:click#restore'    : this._handleRestore
             })
         );
     },
@@ -109,11 +111,17 @@ var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
         (new Y.EventHandle(this._toolbarEvents)).detach();
     },
 
-    _handleRestore: function () {
-        var view = this.get('activeView');
-
-        if (view && Y.instanceOf(view, Y.TodoApp.TodoListView)) {
-            view.restoreItem();
+    /**
+     * Fires when AddProject or AddTask is clicked
+     *
+     * @param {EventFacade} e
+     * @private
+     */
+    _handleAddClicked: function (e) {
+        if (e.button.get('id').indexOf('Project') !== -1) {
+            this._handleAdd('project');
+        } else {
+            this._handleAdd('task');
         }
     }
 

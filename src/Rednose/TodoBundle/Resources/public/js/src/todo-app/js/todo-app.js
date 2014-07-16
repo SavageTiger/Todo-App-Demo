@@ -120,7 +120,61 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         } else {
             this.disableRestore();
         }
+    },
+
+    /**
+     * Fired when the addTask or addProject button is clicked in the toolbar
+     *
+     * @param {string} modelType Expected 'project' or 'task'
+     * @private
+     */
+    _handleAdd: function (modelType) {
+        var self   = this,
+            dialog = new Y.Rednose.Dialog();
+
+        dialog.prompt({
+            title: 'Add new ' + modelType,
+            text: 'Name'
+        }, function (value) {
+
+            // Add project
+            if (modelType === 'project') {
+                var projectsModel = self._projectsView.get('model');
+
+                var model = new Y.TodoApp.Project({ name: value });
+
+                projectsModel.add(model);
+
+                self._projectsView.render();
+            }
+
+            // Add task
+            if (modelType === 'task') {
+                var view    = self.get('activeView'),
+                    project = view.get('model');
+
+                var model   = new Y.TodoApp.Task({ description: value });
+
+                project.get('tasks').add(model);
+
+                view.render();
+            }
+        });
+    },
+
+    /**
+     * Fired when the restore task button is clicked in the toolbar
+     *
+     * @private
+     */
+    _handleRestore: function () {
+        var view = this.get('activeView');
+
+        if (view && Y.instanceOf(view, Y.TodoApp.TodoListView)) {
+            view.restoreItem();
+        }
     }
+
 
 }, {
     ATTRS: {
