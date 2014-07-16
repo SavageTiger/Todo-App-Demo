@@ -22,7 +22,7 @@ ProjectsView = Y.Base.create('projectsView', Y.View, [ ], {
 
     titleTemplate: '<h3>' + VIEW_TITLE + '</h3>',
 
-    itemTemplate: '<li><a href="#"><i class="icon-list-alt"></i>&nbsp;</a></li>',
+    itemTemplate: '<li><a href="#"><i class="icon-tasks"></i>&nbsp;</a></li>',
 
     // -- Protected Properties -------------------------------------------------
 

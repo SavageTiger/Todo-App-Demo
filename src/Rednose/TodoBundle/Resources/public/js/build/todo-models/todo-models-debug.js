@@ -39,7 +39,10 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
     },
 
     _setTasks: function (tasks) {
-        var buffer = new Y.ModelList;
+        var buffer = new Y.ModelList();
+
+        // Set sort function
+        buffer.comparator = this._taskComparator;
 
         Y.each(tasks, function (task) {
             if (Y.instanceOf(task, Y.TodoApp.Task)) {
@@ -50,6 +53,17 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
         });
 
         return buffer;
+    },
+
+    /**
+     * Sort tasks
+     *
+     * @see {Y.ModelList}
+     * @param model
+     * @returns integer
+     */
+    _taskComparator: function (model) {
+        return model.get('id');
     }
 
 }, {

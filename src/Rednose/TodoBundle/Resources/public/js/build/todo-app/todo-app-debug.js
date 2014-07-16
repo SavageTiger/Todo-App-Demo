@@ -36,19 +36,36 @@ var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
     // -- Protected Properties -------------------------------------------------
 
     /**
+     * Event reference container
+     *
+     * @type {Array}
+     */
+    _toolbarEvents: null,
+
+    /**
      * @type {Rednose.Toolbar}
      */
     _toolbar: null,
 
     // -- Lifecycle Methods ----------------------------------------------------
 
+    /**
+     * Constructor
+     */
     initializer: function () {
         var node = this.get('toolbarContainer');
 
         var buttonGroups = [
             {
                 buttons: [
-                    { id: 'add', icon: 'icon-plus', title: 'Add task' }
+                    { id: 'add', value: 'Task', icon: 'icon-plus', title: 'Add task' },
+                    { id: 'add-project', value: 'Project', icon: 'icon-plus', title: 'Add project' }
+                ]
+            },
+
+            {
+                buttons: [
+                    { id: 'save', icon: 'icon-hdd', title: 'Commit changes' }
                 ]
             },
 
@@ -64,15 +81,74 @@ var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
             groups   : buttonGroups
         });
 
-//        this._attachToolbarEventHandles();
+        this._attachToolbarEventHandles();
 
         this._toolbar.addTarget(this);
-        this._toolbar.render();    },
+        this._toolbar.render();
+    },
 
+    /**
+     * Destructor
+     */
     destructor: function () {
+        this._detachToolbarEvents();
+
         this._toolbar.destroy();
         this._toolbar = null;
+    },
+
+    // -- Public Methods -------------------------------------------------------
+
+    /**
+     * Enable restore button
+     */
+    enableRestore: function () {
+        this._toolbar.getButtonById('restore').enable();
+    },
+
+    /**
+     * Disable restore button
+     */
+    disableRestore: function () {
+        this._toolbar.getButtonById('restore').disable();
+    },
+
+    // -- Protected Methods ----------------------------------------------------
+
+    /**
+     * Bind events
+     *
+     * @private
+     */
+    _attachToolbarEventHandles: function () {
+        if (this._toolbarEvents === null) {
+            this._toolbarEvents = [];
+        }
+
+        this._toolbarEvents.push(
+            this.after({
+                'toolbar:click#restore' : this._handleRestore
+            })
+        );
+    },
+
+    /**
+     * Destroy events
+     *
+     * @private
+     */
+    _detachToolbarEvents: function () {
+        (new Y.EventHandle(this._toolbarEvents)).detach();
+    },
+
+    _handleRestore: function () {
+        var view = this.get('activeView');
+
+        if (view && Y.instanceOf(view, Y.TodoApp.TodoListView)) {
+            view.restoreItem();
+        }
     }
+
 });
 
 Y.namespace('TodoApp').Toolbar = Toolbar;/*jshint boss:true, expr:true, onevar:false */
@@ -133,7 +209,8 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         this._projectsView.addTarget(this);
 
         this._events.push(
-            this.after('projectsView:openProject', this._handleOpenProject, this)
+            this.after('projectsView:openProject', this._handleOpenProject, this),
+            this.after('todoListView:taskRemoved', this._handleTaskRemoved, this)
         );
 
         this.after('ready', function () {
@@ -182,6 +259,20 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         this.showView('todoListView', {
             model: e.model
         });
+    },
+
+    /**
+     * Fired when a task is removed from the todoListView
+     *
+     * @param {EventFacade} e
+     * @private
+     */
+    _handleTaskRemoved: function (e) {
+        if (e.queue) {
+            this.enableRestore();
+        } else {
+            this.disableRestore();
+        }
     }
 
 }, {
@@ -215,7 +306,7 @@ ProjectsView = Y.Base.create('projectsView', Y.View, [ ], {
 
     titleTemplate: '<h3>' + VIEW_TITLE + '</h3>',
 
-    itemTemplate: '<li><a href="#"><i class="icon-list-alt"></i>&nbsp;</a></li>',
+    itemTemplate: '<li><a href="#"><i class="icon-tasks"></i>&nbsp;</a></li>',
 
     // -- Protected Properties -------------------------------------------------
 
@@ -344,7 +435,7 @@ var TodoListView;
 
 var Micro = Y.Template.Micro;
 
-TodoListView = Y.Base.create('projectsView', Y.View, [ ], {
+TodoListView = Y.Base.create('todoListView', Y.View, [ ], {
 
     // -- Public properties ----------------------------------------------------
 
@@ -395,6 +486,24 @@ TodoListView = Y.Base.create('projectsView', Y.View, [ ], {
      */
     _removedModels: null,
 
+    // -- Lifecycle Methods ----------------------------------------------------
+
+    /**
+     * Destructor
+     */
+    destructor: function () {
+        Y.Array.each(this._removedModels, function (model) {
+            model.destroy();
+            model = null;
+        });
+
+        this.fire('taskRemoved', {
+            queue: false
+        });
+
+        this._removedModels = null;
+    },
+
     // -- Public Methods -------------------------------------------------------
 
     /**
@@ -408,6 +517,22 @@ TodoListView = Y.Base.create('projectsView', Y.View, [ ], {
         container.append(this.template);
 
         this._renderList();
+    },
+
+    /**
+     * Restore a removed item.
+     */
+    restoreItem: function () {
+        var model         = this._removedModels.pop(),
+            projectsModel = this.get('model');
+
+        projectsModel.get('tasks').add(model);
+
+        this.fire('taskRemoved', {
+            queue: (this._removedModels.length !== 0)
+        });
+
+        this.render();
     },
 
     // -- Protected Methods ----------------------------------------------------
@@ -468,6 +593,10 @@ TodoListView = Y.Base.create('projectsView', Y.View, [ ], {
         this._removedModels.push(model);
 
         projectsModel.get('tasks').remove(model);
+
+        this.fire('taskRemoved', {
+            queue: (this._removedModels.length !== 0)
+        });
 
         this.render();
     }

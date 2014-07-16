@@ -3,7 +3,7 @@ var TodoListView;
 
 var Micro = Y.Template.Micro;
 
-TodoListView = Y.Base.create('projectsView', Y.View, [ ], {
+TodoListView = Y.Base.create('todoListView', Y.View, [ ], {
 
     // -- Public properties ----------------------------------------------------
 
@@ -54,6 +54,24 @@ TodoListView = Y.Base.create('projectsView', Y.View, [ ], {
      */
     _removedModels: null,
 
+    // -- Lifecycle Methods ----------------------------------------------------
+
+    /**
+     * Destructor
+     */
+    destructor: function () {
+        Y.Array.each(this._removedModels, function (model) {
+            model.destroy();
+            model = null;
+        });
+
+        this.fire('taskRemoved', {
+            queue: false
+        });
+
+        this._removedModels = null;
+    },
+
     // -- Public Methods -------------------------------------------------------
 
     /**
@@ -67,6 +85,22 @@ TodoListView = Y.Base.create('projectsView', Y.View, [ ], {
         container.append(this.template);
 
         this._renderList();
+    },
+
+    /**
+     * Restore a removed item.
+     */
+    restoreItem: function () {
+        var model         = this._removedModels.pop(),
+            projectsModel = this.get('model');
+
+        projectsModel.get('tasks').add(model);
+
+        this.fire('taskRemoved', {
+            queue: (this._removedModels.length !== 0)
+        });
+
+        this.render();
     },
 
     // -- Protected Methods ----------------------------------------------------
@@ -127,6 +161,10 @@ TodoListView = Y.Base.create('projectsView', Y.View, [ ], {
         this._removedModels.push(model);
 
         projectsModel.get('tasks').remove(model);
+
+        this.fire('taskRemoved', {
+            queue: (this._removedModels.length !== 0)
+        });
 
         this.render();
     }

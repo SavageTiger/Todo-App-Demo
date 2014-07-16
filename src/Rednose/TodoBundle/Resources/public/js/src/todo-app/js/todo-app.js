@@ -56,7 +56,8 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         this._projectsView.addTarget(this);
 
         this._events.push(
-            this.after('projectsView:openProject', this._handleOpenProject, this)
+            this.after('projectsView:openProject', this._handleOpenProject, this),
+            this.after('todoListView:taskRemoved', this._handleTaskRemoved, this)
         );
 
         this.after('ready', function () {
@@ -105,6 +106,20 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         this.showView('todoListView', {
             model: e.model
         });
+    },
+
+    /**
+     * Fired when a task is removed from the todoListView
+     *
+     * @param {EventFacade} e
+     * @private
+     */
+    _handleTaskRemoved: function (e) {
+        if (e.queue) {
+            this.enableRestore();
+        } else {
+            this.disableRestore();
+        }
     }
 
 }, {

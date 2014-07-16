@@ -17,6 +17,9 @@ class Task extends BaseTask
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"details", "file"})
      */
     protected $id;
 

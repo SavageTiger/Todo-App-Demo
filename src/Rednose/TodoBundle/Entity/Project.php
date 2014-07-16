@@ -17,6 +17,9 @@ class Project extends BaseProject
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @Serializer\XmlAttribute
+     * @Serializer\Groups({"details", "file"})
      */
     protected $id;
 
