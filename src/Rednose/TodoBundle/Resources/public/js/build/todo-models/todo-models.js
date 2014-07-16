@@ -38,6 +38,47 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
         }
     },
 
+    sync: function (action, options, callback) {
+        var modified = false,
+            route;
+
+        // Are there any states changed?
+        this.get('tasks').each(function (task) {
+            if (task.isModified()) {
+                modified = true;
+            }
+        })
+
+        // Are there tasks added or removed?
+        if (this.get('modified') === true) {
+            modified = true;
+        }
+
+        if (modified === false) {
+            return;
+        }
+
+        if (action === 'create') {
+            route = Routing.generate('todo_app_project_create');
+        } else if (action === 'update') {
+            route = Routing.generate('todo_app_project_update', { id: this.get('id') });
+        }
+
+        Y.io(route, {
+            method: 'POST',
+            data: Y.JSON.stringify(
+                this.getAttrs(['name', 'tasks'])
+            ),
+            on : {
+                success: function (tx, r) {
+                    this.set('modified', false);
+
+                    callback(null, Y.JSON.parse(r.responseText));
+                }
+            }
+        });
+    },
+
     _setTasks: function (tasks) {
         var buffer = new Y.ModelList();
 
@@ -90,6 +131,15 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
         tasks: {
             value: null,
             setter: '_setTasks'
+        },
+
+        /**
+         * Modified status (not isModified)
+         *
+         * @type {Boolean}
+         */
+        modified: {
+            value: false
         }
     }
 });
@@ -104,17 +154,15 @@ var ProjectsModel = Y.Base.create('projectsModel', Y.ModelList, [], {
     model: Y.TodoApp.Project,
 
     sync: function (action, options, callback) {
-        switch (action) {
-            case 'read':
-                Y.io(Routing.generate('todo_app_projects_read'), {
-                    method: 'GET',
-                    on : {
-                        success: function (tx, r) {
-                            callback(null, Y.JSON.parse(r.responseText));
-                        }
+        if (action === 'read') {
+            Y.io(Routing.generate('todo_app_projects_read'), {
+                method: 'GET',
+                on : {
+                    success: function (tx, r) {
+                        callback(null, Y.JSON.parse(r.responseText));
                     }
-                });
-                return;
+                }
+            });
         }
     }
 

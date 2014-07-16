@@ -97,6 +97,7 @@ var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
             this.after({
                 'toolbar:click#addTask'    : this._handleAddClicked,
                 'toolbar:click#addProject' : this._handleAddClicked,
+                'toolbar:click#save'       : this._saveProjects,
                 'toolbar:click#restore'    : this._handleRestore
             })
         );

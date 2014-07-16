@@ -129,6 +129,7 @@ var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
             this.after({
                 'toolbar:click#addTask'    : this._handleAddClicked,
                 'toolbar:click#addProject' : this._handleAddClicked,
+                'toolbar:click#save'       : this._saveProjects,
                 'toolbar:click#restore'    : this._handleRestore
             })
         );
@@ -218,7 +219,8 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
 
         this._events.push(
             this.after('projectsView:openProject', this._handleOpenProject, this),
-            this.after('todoListView:taskRemoved', this._handleTaskRemoved, this)
+            this.after('todoListView:taskRemoved', this._handleTaskRemoved, this),
+            this.after('todoListView:taskAdded', this._handleTaskAdded, this)
         );
 
         this.after('ready', function () {
@@ -254,6 +256,14 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
 
         projects.load(function() {
             self._projectsView.set('model', projects);
+        });
+    },
+
+    _saveProjects: function () {
+        var projects = this._projectsView.get('model');
+
+        projects.each(function (project) {
+            project.save();
         });
     },
 
@@ -297,12 +307,14 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
             title: 'Add new ' + modelType,
             text: 'Name'
         }, function (value) {
+            var model = null;
 
             // Add project
             if (modelType === 'project') {
                 var projectsModel = self._projectsView.get('model');
 
-                var model = new Y.TodoApp.Project({ name: value });
+                // Create new project model
+                model = new Y.TodoApp.Project({ name: value, modified: true });
 
                 projectsModel.add(model);
 
@@ -314,9 +326,11 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
                 var view    = self.get('activeView'),
                     project = view.get('model');
 
-                var model   = new Y.TodoApp.Task({ description: value });
+                // Create new task model
+                model   = new Y.TodoApp.Task({ description: value });
 
                 project.get('tasks').add(model);
+                project.set('modified', true);
 
                 view.render();
             }
@@ -586,12 +600,14 @@ TodoListView = Y.Base.create('todoListView', Y.View, [ ], {
      */
     restoreItem: function () {
         var model         = this._removedModels.pop(),
-            projectsModel = this.get('model');
+            projectsModel = this.get('model'),
+            modified      = (this._removedModels.length !== 0);
 
         projectsModel.get('tasks').add(model);
+        projectsModel.set('modified', modified);
 
         this.fire('taskRemoved', {
-            queue: (this._removedModels.length !== 0)
+            queue: modified
         });
 
         this.render();
@@ -655,6 +671,7 @@ TodoListView = Y.Base.create('todoListView', Y.View, [ ], {
         this._removedModels.push(model);
 
         projectsModel.get('tasks').remove(model);
+        projectsModel.set('modified', true);
 
         this.fire('taskRemoved', {
             queue: (this._removedModels.length !== 0)

@@ -92,12 +92,14 @@ TodoListView = Y.Base.create('todoListView', Y.View, [ ], {
      */
     restoreItem: function () {
         var model         = this._removedModels.pop(),
-            projectsModel = this.get('model');
+            projectsModel = this.get('model'),
+            modified      = (this._removedModels.length !== 0);
 
         projectsModel.get('tasks').add(model);
+        projectsModel.set('modified', modified);
 
         this.fire('taskRemoved', {
-            queue: (this._removedModels.length !== 0)
+            queue: modified
         });
 
         this.render();
@@ -161,6 +163,7 @@ TodoListView = Y.Base.create('todoListView', Y.View, [ ], {
         this._removedModels.push(model);
 
         projectsModel.get('tasks').remove(model);
+        projectsModel.set('modified', true);
 
         this.fire('taskRemoved', {
             queue: (this._removedModels.length !== 0)
