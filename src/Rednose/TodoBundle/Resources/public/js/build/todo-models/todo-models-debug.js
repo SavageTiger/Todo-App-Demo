@@ -39,7 +39,8 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
     },
 
     sync: function (action, options, callback) {
-        var modified = false,
+        var self     = this,
+            modified = false,
             route;
 
         // Are there any states changed?
@@ -67,13 +68,11 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
         Y.io(route, {
             method: 'POST',
             data: Y.JSON.stringify(
-                this.getAttrs(['name', 'tasks'])
+                this.getAttrs(['id', 'name', 'tasks'])
             ),
             on : {
                 success: function (tx, r) {
-                    this.set('modified', false);
-
-                    callback(null, Y.JSON.parse(r.responseText));
+                    self.set('modified', false);
                 }
             }
         });

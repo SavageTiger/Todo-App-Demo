@@ -66,6 +66,6 @@ class ProjectController extends Controller
         $em->persist($project);
         $em->flush();
 
-        return new Response('');
+        return new Response(json_encode(array('id' => $project->getId())));
     }
 }
