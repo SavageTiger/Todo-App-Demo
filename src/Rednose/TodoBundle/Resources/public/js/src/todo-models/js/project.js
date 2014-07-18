@@ -29,25 +29,21 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
             return;
         }
 
-        if (action === 'create') {
-            route = Routing.generate('todo_app_project_create');
-        } else if (action === 'update') {
-            route = Routing.generate('todo_app_project_update', { id: this.get('id') });
-        }
+        route = Routing.generate('todo_app_project_update');
 
-        Y.io(route, {
-            method: 'POST',
-            data: Y.JSON.stringify(
-                this.getAttrs(['id', 'name', 'tasks'])
-            ),
-            on : {
-                success: function (tx, r) {
-                    self.set('modified', false);
-
-                    callback(null, Y.JSON.parse(r.responseText));
+        if (action === 'create' || action === 'update') {
+            Y.io(route, {
+                method: 'POST',
+                data: Y.JSON.stringify(
+                    this.getAttrs(['id', 'name', 'tasks'])
+                ),
+                on : {
+                    success: function (tx, r) {
+                        callback(null, Y.JSON.parse(r.responseText));
+                    }
                 }
-            }
-        });
+            });
+        }
     },
 
     _setTasks: function (tasks) {

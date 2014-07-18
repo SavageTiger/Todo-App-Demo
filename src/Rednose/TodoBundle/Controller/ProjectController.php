@@ -29,30 +29,20 @@ class ProjectController extends Controller
             array(), array('name' => 'ASC')
         );
 
-        $handler = $this->get('fos_rest.view_handler');
-
-        $view    = new View();
-        $context = new SerializationContext();
-        $context->setGroups(array('details'));
-
-        $view->setSerializationContext($context);
-        $view->setData($projects);
-        $view->setFormat('json');
-
-        return $handler->handle($view);
+        return $this->getView(array('details'), $projects);
     }
 
     /**
      * Update a project
      *
-     * @Post("/project/{id}", name="todo_app_project_update", options={"expose"=true})
+     * @Post("/project", name="todo_app_project_update", options={"expose"=true})
      *
      * @return Response
      */
-    function updateProjectActions($id)
+    function updateProjectActions()
     {
         $em = $this->getDoctrine()->getManager();
-        $serializer = $this->get('serializer');
+        $serializer = $this->get('jms_serializer');
 
         $context = new DeserializationContext();
         $context->setGroups(array('details'));
@@ -66,6 +56,28 @@ class ProjectController extends Controller
         $em->persist($project);
         $em->flush();
 
-        return new Response(json_encode(array('id' => $project->getId())));
+        return $this->getView(array('details'), $project);
+    }
+
+    /**
+     * Create a serializer view
+     *
+     * @param array $groups
+     * @param mixed $data
+     * @return Response
+     */
+    private function getView($groups, $data)
+    {
+        $handler = $this->get('fos_rest.view_handler');
+
+        $view    = new View();
+        $context = new SerializationContext();
+        $context->setGroups($groups);
+
+        $view->setSerializationContext($context);
+        $view->setData($data);
+        $view->setFormat('json');
+
+        return $handler->handle($view);
     }
 }
