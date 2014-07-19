@@ -1,8 +1,22 @@
 YUI.add('todo-models', function (Y, NAME) {
 
+/*global Routing */
 /*jshint onevar:false */
 
 var TaskModel = Y.Base.create('taskModel', Y.Model, [], {
+
+    sync: function (action/*, options, callback*/) {
+        if (action === 'delete') {
+
+            // Only do an ajax call if I have an Id
+            if (this.get('id')) {
+                Y.io(Routing.generate('todo_app_task_remove', { id: this.get('id') }), {
+                    method: 'POST'
+                });
+            }
+
+        }
+    }
 
 }, {
     ATTRS: {
@@ -28,7 +42,8 @@ var TaskModel = Y.Base.create('taskModel', Y.Model, [], {
 
 // --- Namespace ---------------------------------------------------------------
 
-Y.namespace('TodoApp').Task = TaskModel;/*jshint onevar:false */
+Y.namespace('TodoApp').Task = TaskModel;/*global Routing */
+/*jshint onevar:false */
 
 var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
 
@@ -39,8 +54,7 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
     },
 
     sync: function (action, options, callback) {
-        var self     = this,
-            modified = false,
+        var modified = false,
             route;
 
         // Are there any states changed?
@@ -48,7 +62,7 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
             if (task.isModified()) {
                 modified = true;
             }
-        })
+        });
 
         // Are there tasks added or removed?
         if (this.get('modified') === true) {
@@ -69,8 +83,6 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
                 ),
                 on : {
                     success: function (tx, r) {
-                        self.set('modified', false);
-
                         callback(null, Y.JSON.parse(r.responseText));
                     }
                 }

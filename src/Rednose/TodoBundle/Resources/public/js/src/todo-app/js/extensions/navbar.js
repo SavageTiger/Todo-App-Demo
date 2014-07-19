@@ -1,3 +1,4 @@
+/*jshint boss:true, expr:true, onevar:false */
 
 var Navbar = Y.Base.create('navBar', Y.Base, [], {
 

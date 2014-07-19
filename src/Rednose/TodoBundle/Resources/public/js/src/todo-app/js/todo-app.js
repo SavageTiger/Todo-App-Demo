@@ -42,6 +42,13 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
      */
     _projectsView: null,
 
+    /**
+     * Removed tasks that can be recovered
+     *
+     * @type {Array<{project: Y.TodoApp.Project, task: Y.TodoApp.Task}>}
+     */
+    _removedModels: null,
+
     // -- Lifecycle methods ----------------------------------------------------
 
     /**
@@ -76,6 +83,12 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
      * Destructor
      */
     destructor: function () {
+        Y.Array.each(this._removedModels, function (deletedTask) {
+            deletedTask.task.destroy();
+            deletedTask.task = null;
+        });
+        this._removedModels = null;
+
         this.detach(this._events);
 
         this._events = null;
@@ -100,8 +113,14 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
     _saveProjects: function () {
         var projects = this._projectsView.get('model');
 
+        // Persist changes
         projects.each(function (project) {
             project.save();
+        });
+
+        // Destroy removed tasks
+        Y.Array.each(this._removedModels, function (deletedTask) {
+            deletedTask.task.destroy({ remove: true });
         });
     },
 
@@ -115,20 +134,6 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         this.showView('todoListView', {
             model: e.model
         });
-    },
-
-    /**
-     * Fired when a task is removed from the todoListView
-     *
-     * @param {EventFacade} e
-     * @private
-     */
-    _handleTaskRemoved: function (e) {
-        if (e.queue) {
-            this.enableRestore();
-        } else {
-            this.disableRestore();
-        }
     },
 
     /**
@@ -176,6 +181,31 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
     },
 
     /**
+     * Fired when a task is removed from the todoListView
+     *
+     * @param {EventFacade|null} e
+     * @private
+     */
+    _handleTaskRemoved: function (e) {
+        if (this._removedModels === null) {
+            this._removedModels = [];
+        }
+
+        if (e) {
+            this._removedModels.push({
+                project: e.projectModel,
+                task: e.taskModel
+            });
+        }
+
+        if (this._removedModels !== null && this._removedModels.length > 0) {
+            this.enableRestore();
+        } else {
+            this.disableRestore();
+        }
+    },
+
+    /**
      * Fired when the restore task button is clicked in the toolbar
      *
      * @private
@@ -183,9 +213,21 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
     _handleRestore: function () {
         var view = this.get('activeView');
 
-        if (view && Y.instanceOf(view, Y.TodoApp.TodoListView)) {
-            view.restoreItem();
+        if (this._removedModels !== null && this._removedModels.length > 0) {
+            var deletedTask = this._removedModels.pop();
+
+            deletedTask.project.get('tasks').add(
+                deletedTask.task
+            );
+
+            // Only re-render the view if the project is on-screen.
+            if (deletedTask.project.get('clientId') === view.get('model').get('clientId')) {
+                view.render();
+            }
         }
+
+        // Update the toolbar button status.
+        this._handleTaskRemoved(null);
     }
 
 

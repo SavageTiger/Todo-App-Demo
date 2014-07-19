@@ -1,3 +1,4 @@
+/*jshint boss:true, expr:true, onevar:false */
 
 var Toolbar = Y.Base.create('toolbar', Y.Base, [], {
 

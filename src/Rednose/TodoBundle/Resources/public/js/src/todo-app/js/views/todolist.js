@@ -1,3 +1,4 @@
+/*jshint boss:true, expr:true, onevar:false */
 
 var TodoListView;
 
@@ -45,33 +46,6 @@ TodoListView = Y.Base.create('todoListView', Y.View, [ ], {
         '</tr>'
     ),
 
-    // -- Protected properties -------------------------------------------------
-
-    /**
-     * Removed tasks that can be recovered
-     *
-     * @type {Array<Y.TodoApp.Task>}
-     */
-    _removedModels: null,
-
-    // -- Lifecycle Methods ----------------------------------------------------
-
-    /**
-     * Destructor
-     */
-    destructor: function () {
-        Y.Array.each(this._removedModels, function (model) {
-            model.destroy();
-            model = null;
-        });
-
-        this.fire('taskRemoved', {
-            queue: false
-        });
-
-        this._removedModels = null;
-    },
-
     // -- Public Methods -------------------------------------------------------
 
     /**
@@ -85,24 +59,6 @@ TodoListView = Y.Base.create('todoListView', Y.View, [ ], {
         container.append(this.template);
 
         this._renderList();
-    },
-
-    /**
-     * Restore a removed item.
-     */
-    restoreItem: function () {
-        var model         = this._removedModels.pop(),
-            projectsModel = this.get('model'),
-            modified      = (this._removedModels.length !== 0);
-
-        projectsModel.get('tasks').add(model);
-        projectsModel.set('modified', modified);
-
-        this.fire('taskRemoved', {
-            queue: modified
-        });
-
-        this.render();
     },
 
     // -- Protected Methods ----------------------------------------------------
@@ -153,20 +109,16 @@ TodoListView = Y.Base.create('todoListView', Y.View, [ ], {
      * @private
      */
     _handleRemoveClicked: function (e) {
-        var node          = e.currentTarget,
-            projectsModel = this.get('model'),
-            model         = node.ancestor('tr').getData('model');
+        var node         = e.currentTarget,
+            projectModel = this.get('model'),
+            model        = node.ancestor('tr').getData('model');
 
-        if (this._removedModels === null) {
-            this._removedModels = [];
-        }
-        this._removedModels.push(model);
-
-        projectsModel.get('tasks').remove(model);
-        projectsModel.set('modified', true);
+        projectModel.get('tasks').remove(model);
+        projectModel.set('modified', true);
 
         this.fire('taskRemoved', {
-            queue: (this._removedModels.length !== 0)
+            projectModel: projectModel,
+            taskModel: model
         });
 
         this.render();

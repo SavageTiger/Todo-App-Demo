@@ -1,3 +1,4 @@
+/*global Routing */
 /*jshint onevar:false */
 
 var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
@@ -9,8 +10,7 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
     },
 
     sync: function (action, options, callback) {
-        var self     = this,
-            modified = false,
+        var modified = false,
             route;
 
         // Are there any states changed?
@@ -18,7 +18,7 @@ var ProjectModel = Y.Base.create('projectModel', Y.Model, [], {
             if (task.isModified()) {
                 modified = true;
             }
-        })
+        });
 
         // Are there tasks added or removed?
         if (this.get('modified') === true) {
