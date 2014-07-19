@@ -110,6 +110,11 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         });
     },
 
+    /**
+     * Persist changes; Permanently remove tasks
+     *
+     * @private
+     */
     _saveProjects: function () {
         var projects = this._projectsView.get('model');
 
@@ -121,7 +126,13 @@ var TodoApp = Y.Base.create('todoApp', Y.Rednose.App, [
         // Destroy removed tasks
         Y.Array.each(this._removedModels, function (deletedTask) {
             deletedTask.task.destroy({ remove: true });
+            deletedTask.task = null;
         });
+
+        this._removedModels = null;
+
+        // Update the toolbar button status.
+        this._handleTaskRemoved(null);
     },
 
     /**
