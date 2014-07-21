@@ -1,5 +1,6 @@
 YUI.add('todo-app', function (Y, NAME) {
 
+/*global Routing */
 /*jshint boss:true, expr:true, onevar:false */
 
 var Navbar = Y.Base.create('navBar', Y.Base, [], {
@@ -19,7 +20,16 @@ var Navbar = Y.Base.create('navBar', Y.Base, [], {
         this._navbar = new Y.Rednose.Navbar({
             title       : APP_NAME,
             columnLayout: true,
-            container   : node
+            container   : node,
+
+            menu        : [],
+            menuSecondary: [
+                {
+                    title: 'Extra', items: [
+                        { url  : Routing.generate('todo_app_projects_export'), title: 'Export', icon: 'icon-download' }
+                    ]
+                }
+            ]
         });
 
         this._navbar.render();

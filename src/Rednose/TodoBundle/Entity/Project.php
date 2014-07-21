@@ -10,6 +10,8 @@ use Rednose\TodoBundle\Model\Project as BaseProject;
 /**
  * @ORM\Entity
  * @ORM\Table(name="todo_project")
+ *
+ * @Serializer\XmlRoot("project")
  */
 class Project extends BaseProject
 {
@@ -19,7 +21,7 @@ class Project extends BaseProject
      * @ORM\GeneratedValue(strategy="AUTO")
      *
      * @Serializer\XmlAttribute
-     * @Serializer\Groups({"details", "file"})
+     * @Serializer\Groups({"details"})
      */
     protected $id;
 

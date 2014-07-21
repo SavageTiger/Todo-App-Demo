@@ -2,7 +2,8 @@
 
 namespace Rednose\TodoBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Rednose\TodoBundle\Common\Controller;
+
 use Symfony\Component\HttpFoundation\Response;
 
 use FOS\RestBundle\Controller\Annotations\Post;

@@ -2,15 +2,14 @@
 
 namespace Rednose\TodoBundle\Controller;
 
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\DeserializationContext;
-
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\View\View;
+
+use JMS\Serializer\DeserializationContext;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use Rednose\TodoBundle\Common\Controller;
 
 class ProjectController extends Controller
 {
@@ -29,7 +28,47 @@ class ProjectController extends Controller
             array(), array('name' => 'ASC')
         );
 
-        return $this->getView(array('details'), $projects);
+        return $this->getView('json', array('details'), $projects);
+    }
+
+    /**
+     * Export all projects
+     *
+     * @Get("/projects/export", name="todo_app_projects_export", options={"expose"=true})
+     *
+     * @return Response
+     */
+    function exportProjectsActions()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/xml');
+        $response->headers->set('Content-Disposition', 'attachment;filename=export.xml');
+
+        $projects = $em->getRepository('Rednose\TodoBundle\Entity\Project')->findAll();
+
+        $domExport = new \DOMDocument('1.0', 'UTF-8');
+        $domExport->loadXml('<projects />');
+
+        foreach ($projects as $project) {
+            $domProject = new \DOMDocument('1.0', 'UTF-8');
+            $domProject->loadXml(
+                $this->getView('xml', array('file'), $project)->getContent()
+            );
+
+            $projectNode = $domExport->importNode($domProject->getElementsByTagName('project')->item(0), true);
+
+            $domExport->getElementsByTagName('projects')->item(0)->appendChild(
+                $projectNode
+            );
+        }
+
+        $response->setContent(
+            $domExport->saveXML()
+        );
+
+        return $response;
     }
 
     /**
@@ -56,28 +95,6 @@ class ProjectController extends Controller
         $em->persist($project);
         $em->flush();
 
-        return $this->getView(array('details'), $project);
-    }
-
-    /**
-     * Create a serializer view
-     *
-     * @param array $groups
-     * @param mixed $data
-     * @return Response
-     */
-    private function getView($groups, $data)
-    {
-        $handler = $this->get('fos_rest.view_handler');
-
-        $view    = new View();
-        $context = new SerializationContext();
-        $context->setGroups($groups);
-
-        $view->setSerializationContext($context);
-        $view->setData($data);
-        $view->setFormat('json');
-
-        return $handler->handle($view);
+        return $this->getView('json', array('details'), $project);
     }
 }
