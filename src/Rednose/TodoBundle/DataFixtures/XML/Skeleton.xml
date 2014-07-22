@@ -3,23 +3,22 @@
 <projects>
 
     <project name="Baking cookies">
-        <id>65</id>
         <tasks>
-            <task ready="false" id="132">
+            <task ready="false">
                 <description>Decide what sort of cookie to bake</description>
             </task>
-            <task ready="false" id="132">
+            <task ready="false">
                 <description>Buy ingredients</description>
             </task>
-            <task ready="false" id="132">
+            <task ready="false">
                 <description>Invite friends to taste my amazing cookies</description>
             </task>
         </tasks>
     </project>
 
-    <project name="Become rich and famous" id="65">
+    <project name="Become rich and famous">
         <tasks>
-            <task ready="true" id="135">
+            <task ready="true">
                 <description>Collect underpants</description>
             </task>
             <task ready="false">
