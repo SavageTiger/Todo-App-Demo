@@ -3,8 +3,10 @@
 
     <services>
 
-        <!-- JMS Object constructor alias -->
-        <service id="jms_serializer.object_constructor" alias="rednose_todo.object_constructor" public="false" />
+    <service id="rednose_todo.object_constructor" class="Rednose\TodoBundle\Doctrine\DoctrineObjectConstructor">
+     <argument type="service" id="doctrine"/>
+     <argument type="service" id="jms_serializer.unserialize_object_constructor"/>
+    </service>
 
     </services>
 </container>

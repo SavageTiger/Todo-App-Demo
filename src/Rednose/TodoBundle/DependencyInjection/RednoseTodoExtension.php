@@ -22,7 +22,7 @@ class RednoseTodoExtension extends Extension
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        $serviceFiles = array('serializer');
+        $serviceFiles = array('doctrine', 'serializer');
 
         foreach ($serviceFiles as $basename) {
             $loader->load(sprintf('%s.xml', $basename));
